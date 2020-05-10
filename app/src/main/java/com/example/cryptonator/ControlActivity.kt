@@ -24,7 +24,7 @@ class ControlActivity: AppCompatActivity() {
         var m_isConnected:Boolean=false
         lateinit var m_bluetoothAdapter: BluetoothAdapter
         lateinit var m_address: String
-
+        lateinit var nameBlue:String// test
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,10 +32,10 @@ class ControlActivity: AppCompatActivity() {
         setContentView(R.layout.control_act)
         m_address = intent.getStringExtra(MainActivity.EXTRA_ADDRESS)
         m_bluetoothAdapter= BluetoothAdapter.getDefaultAdapter()
-
+        val testingName: BluetoothDevice= m_bluetoothAdapter.getRemoteDevice(m_address) //test
         ConnectToDevice(this).execute()
-
-        device_name.text = m_address
+        nameBlue= testingName.name//test
+        device_name.text = nameBlue//test
         Disconnectbutton.setOnClickListener{disconnect()}
         Unlockbutton.setOnClickListener { sendCommand("a") }
 

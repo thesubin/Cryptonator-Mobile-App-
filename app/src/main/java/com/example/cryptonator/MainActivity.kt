@@ -1,9 +1,13 @@
 package com.example.cryptonator
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +22,9 @@ class MainActivity : AppCompatActivity() {
     private val REQUEST_CODE_ENABLE_BT: Int = 1
     private lateinit var bAdapter:BluetoothAdapter
     private lateinit var  pdevices: Set<BluetoothDevice>
-
+    lateinit var m_progress:ProgressDialog
+    val list: ArrayList<BluetoothDevice> = ArrayList()
+    val nameList: ArrayList<String> = ArrayList()
     companion object{
         val EXTRA_ADDRESS: String= "Device_address"
     }
@@ -33,12 +39,14 @@ class MainActivity : AppCompatActivity() {
             select_device.visibility=View.VISIBLE
             btnRefresh.visibility=View.VISIBLE
             textselect.visibility=View.VISIBLE
-            pairedDeviceList()
+            bAdapter.startDiscovery()
+            registerReceiver()
         }
 
         btnRefresh.setOnClickListener{
-            pairedDeviceList()
-
+            bAdapter.startDiscovery()
+            nameList.clear()
+            list.clear()
         }
 
         Onbutton.setOnClickListener {
@@ -66,19 +74,87 @@ class MainActivity : AppCompatActivity() {
                         select_device.visibility=View.VISIBLE
                         btnRefresh.visibility=View.VISIBLE
                         textselect.visibility=View.VISIBLE
-                        pairedDeviceList()
+                        bAdapter.startDiscovery()
+                        registerReceiver()
                     }
             }
             super.onActivityResult(requestCode, resultCode, data)
         }
 
-    private fun pairedDeviceList(){
-        pdevices = bAdapter.bondedDevices
-        val list : ArrayList<BluetoothDevice> = ArrayList()
 
+    private fun registerReceiver() {
+       registerReceiver(discoverReceiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
+        registerReceiver(discoverReceiver, IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED))
+        registerReceiver(discoverReceiver, IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
+    }
+
+    private val discoverReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+
+
+            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(intent.action)) {
+                m_progress = ProgressDialog.show(
+                    context,
+                    "Searching for Bluetooth devices",
+                    "Please Wait...."
+                )
+            }
+            if (BluetoothDevice.ACTION_FOUND.equals(intent.action)) {
+                val device =
+                    intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+
+                list.add(device)
+                nameList.add(device.name)
+                Log.i("device", "" + device)
+
+                textselect.text = "Available Devices"
+                val adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, nameList)
+                select_device.adapter = adapter
+                select_device.onItemClickListener =
+                    AdapterView.OnItemClickListener { _, _, position, _ ->
+                        val device: BluetoothDevice = list[position]
+                        val address: String = device.address
+
+                        val intent = Intent(context, ControlActivity::class.java)
+                        intent.putExtra(EXTRA_ADDRESS, address)
+                        startActivity(intent)
+                    }
+            }
+
+            if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(intent.action)) {
+                Toast.makeText(context, "Search Completed", Toast.LENGTH_LONG)
+                    .show()
+                m_progress.dismiss()
+
+                if (nameList.isEmpty()||nameList.size==0||nameList==null){
+                    Toast.makeText(context, "No devices found!", Toast.LENGTH_LONG)
+                        .show()
+                    pairedDeviceList()
+                }
+                else{
+                    Toast.makeText(context,"hello" +nameList.size, Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
+    }
+
+
+
+
+
+    private fun pairedDeviceList(){
+
+        pdevices = bAdapter.bondedDevices
+        textselect.text = "Paired Devices"
+
+
+        val hiddenlist : ArrayList<BluetoothDevice> = ArrayList()
+        val nList : ArrayList<String> = ArrayList()
         if (!pdevices.isEmpty()){
             for (device: BluetoothDevice in pdevices){
-                list.add(device)
+                hiddenlist.add(device)
+                nList.add(device.name)
                 Log.i("device",""+device)
             }
         }else{
@@ -86,10 +162,10 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,list)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,nList)
         select_device.adapter = adapter
         select_device.onItemClickListener= AdapterView.OnItemClickListener{_,_,position,_->
-            val device: BluetoothDevice= list[position]
+            val device: BluetoothDevice= hiddenlist[position]
             val address: String = device.address
             
             val intent = Intent (this, ControlActivity::class.java)
