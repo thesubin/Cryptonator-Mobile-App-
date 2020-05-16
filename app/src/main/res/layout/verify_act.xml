@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+
+    <TextView
+        android:layout_marginTop="62dp"
+        android:layout_width="234dp"
+        android:layout_height="34dp"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        android:text="Connected to:"
+        />
+
+    <TextView
+        android:id="@+id/device_name"
+        android:textColor="#367045"
+        android:layout_width="234dp"
+        android:layout_height="34dp"
+        android:textAlignment="center"
+        android:textSize="17dp"
+        android:text="Device_name"
+        />
+
+    <View
+        android:layout_marginTop="82dp"
+        android:layout_width="131dp"
+        android:layout_height="142dp"
+        android:background="@drawable/circle"
+        tools:layout_editor_absoluteX="145dp"
+        tools:layout_editor_absoluteY="97dp"
+        />
+
+    <ImageView
+        android:layout_width="72dp"
+        android:layout_height="82dp"
+        android:background="@drawable/lock_open"
+        android:layout_marginTop="-115dp"
+        />
+    <TextView
+        android:layout_marginTop="72dp"
+        android:layout_width="234dp"
+        android:layout_height="122dp"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        android:text="Your Files are currently unlocked"
+        />
+
+    <Button
+
+        android:id="@+id/Disconnectbutton"
+        android:layout_width="244dp"
+        android:layout_height="50dp"
+        android:text="Disconnect"
+        android:textSize="22dp"
+        android:layout_marginTop="12dp"
+
+        />
+
+</LinearLayout>
