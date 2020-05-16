@@ -4,15 +4,20 @@ import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.control_act.*
 import java.io.IOException
+import java.lang.reflect.Method
 import java.util.*
 
 
@@ -27,18 +32,50 @@ class ControlActivity: AppCompatActivity() {
         lateinit var nameBlue:String// test
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.control_act)
         m_address = intent.getStringExtra(MainActivity.EXTRA_ADDRESS)
         m_bluetoothAdapter= BluetoothAdapter.getDefaultAdapter()
         val testingName: BluetoothDevice= m_bluetoothAdapter.getRemoteDevice(m_address) //test
-        ConnectToDevice(this).execute()
         nameBlue= testingName.name//test
         device_name.text = nameBlue//test
         Disconnectbutton.setOnClickListener{disconnect()}
         Unlockbutton.setOnClickListener { sendCommand("a") }
 
+            if (testingName.bondState == BluetoothDevice.BOND_BONDED) {
+
+                 ConnectToDevice(this).execute()
+
+            } else {
+
+
+                 pairDevice(testingName);
+
+            }
+
+
+
+
+        registerReceiver(mPairReceiver, IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED));
+    }
+
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    private fun pairDevice(device: BluetoothDevice) {
+        try {
+
+
+            device.createBond()
+//
+//            val method = device.javaClass.getMethod("createBond", *(null as Array<Class<Any>>))
+//            method.invoke(device, *(null as Array<Any>))
+//
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+
+        }
     }
 
     private fun sendCommand(input: String){
@@ -116,5 +153,29 @@ class ControlActivity: AppCompatActivity() {
 
         }
 
+    }
+
+    private val mPairReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED == action) {
+                val state =
+                    intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)
+                val prevState = intent.getIntExtra(
+                    BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE,
+                    BluetoothDevice.ERROR
+                )
+                if (state == BluetoothDevice.BOND_BONDED && prevState == BluetoothDevice.BOND_BONDING) {
+                    Toast.makeText(context, "Connected ", Toast.LENGTH_LONG)
+                        .show()
+
+                } else if (state == BluetoothDevice.BOND_NONE && prevState == BluetoothDevice.BOND_BONDING) {
+                    Toast.makeText(context, "Couldnt pair ", Toast.LENGTH_LONG)
+                        .show()
+
+                }
+
+            }
+        }
     }
 }

@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var m_progress:ProgressDialog
     val list: ArrayList<BluetoothDevice> = ArrayList()
     val nameList: ArrayList<String> = ArrayList()
+
     companion object{
         val EXTRA_ADDRESS: String= "Device_address"
     }
@@ -65,10 +66,7 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         if(requestCode == REQUEST_CODE_ENABLE_BT){
-                    if (requestCode == Activity.RESULT_OK){
-                        Toast.makeText(this,  "Could not turn on", Toast.LENGTH_LONG).show()
-                    }
-                else{
+                    if (bAdapter.isEnabled){
                         Toast.makeText(this,  "Turned on", Toast.LENGTH_LONG).show()
                         Onbutton.visibility=View.GONE
                         select_device.visibility=View.VISIBLE
@@ -76,6 +74,11 @@ class MainActivity : AppCompatActivity() {
                         textselect.visibility=View.VISIBLE
                         bAdapter.startDiscovery()
                         registerReceiver()
+
+
+                    }
+                else{
+                        Toast.makeText(this,  "Could not turn on", Toast.LENGTH_LONG).show()
                     }
             }
             super.onActivityResult(requestCode, resultCode, data)
@@ -84,6 +87,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun registerReceiver() {
        registerReceiver(discoverReceiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
+        registerReceiver(discoverReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
         registerReceiver(discoverReceiver, IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED))
         registerReceiver(discoverReceiver, IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
     }
@@ -91,6 +95,21 @@ class MainActivity : AppCompatActivity() {
     private val discoverReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
 
+
+            if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(intent.action)) {
+                val state =
+                    intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+
+                if (state == BluetoothAdapter.STATE_OFF) {
+                    Toast.makeText(context, "Bluetooth Turned Off ", Toast.LENGTH_LONG)
+                        .show()
+
+                    Onbutton.visibility = View.VISIBLE
+                    select_device.visibility = View.GONE
+                    btnRefresh.visibility = View.GONE
+                    textselect.visibility = View.GONE
+                }
+            }
 
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(intent.action)) {
                 m_progress = ProgressDialog.show(
@@ -115,6 +134,7 @@ class MainActivity : AppCompatActivity() {
                         val device: BluetoothDevice = list[position]
                         val address: String = device.address
 
+
                         val intent = Intent(context, ControlActivity::class.java)
                         intent.putExtra(EXTRA_ADDRESS, address)
                         startActivity(intent)
@@ -132,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                     pairedDeviceList()
                 }
                 else{
-                    Toast.makeText(context,"hello" +nameList.size, Toast.LENGTH_LONG)
+                    Toast.makeText(context,"Devices found: " +nameList.size, Toast.LENGTH_LONG)
                         .show()
                 }
             }
