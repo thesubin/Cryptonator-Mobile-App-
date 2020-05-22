@@ -37,7 +37,7 @@ class ControlActivity: AppCompatActivity() {
         lateinit var nameBlue:String// test
 
     }
-
+        private lateinit var progress: ProgressDialog
         lateinit var biometricManager: BiometricManager
         private val TAG= MainActivity::getLocalClassName.toString()
         private lateinit var biometricPrompt: BiometricPrompt
@@ -143,8 +143,14 @@ class ControlActivity: AppCompatActivity() {
 //            method.invoke(device, *(null as Array<Any>))
 //
 
+
+
+
         } catch (e: Exception) {
             e.printStackTrace()
+         //   finish()
+            val intent = Intent (this,MainActivity::class.java)
+            startActivity(intent)
 
         }
     }
@@ -212,6 +218,7 @@ class ControlActivity: AppCompatActivity() {
 
                 val tea = Toast.makeText(context, "Couldn't Connect", Toast.LENGTH_LONG)
                 tea.show()
+                //ENABLE THIS AFTER CREATING SERVER
 //                val intent = Intent (context,MainActivity::class.java)
 //
 //                context.startActivity(intent)
@@ -239,6 +246,7 @@ class ControlActivity: AppCompatActivity() {
                 if (state == BluetoothDevice.BOND_BONDED && prevState == BluetoothDevice.BOND_BONDING) {
                     Toast.makeText(context, "Connected ", Toast.LENGTH_LONG)
                         .show()
+                    ConnectToDevice(context).execute()
 
                 } else if (state == BluetoothDevice.BOND_NONE && prevState == BluetoothDevice.BOND_BONDING) {
                     Toast.makeText(context, "Couldnt pair ", Toast.LENGTH_LONG)

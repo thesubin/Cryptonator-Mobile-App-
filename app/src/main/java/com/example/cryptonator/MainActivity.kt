@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var m_progress:ProgressDialog
     val list: ArrayList<BluetoothDevice> = ArrayList()
     val nameList: ArrayList<String> = ArrayList()
+     var params: Int = 0
 
     companion object{
         val EXTRA_ADDRESS: String= "Device_address"
@@ -32,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        params= select_device.layoutParams.height
 
         bAdapter= BluetoothAdapter.getDefaultAdapter()
         if(bAdapter.isEnabled){
@@ -129,6 +133,9 @@ class MainActivity : AppCompatActivity() {
                 textselect.text = "Available Devices"
                 val adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, nameList)
                 select_device.adapter = adapter
+
+                select_device.layoutParams.height= ViewGroup.LayoutParams.WRAP_CONTENT+240
+
                 select_device.onItemClickListener =
                     AdapterView.OnItemClickListener { _, _, position, _ ->
                         val device: BluetoothDevice = list[position]
@@ -139,6 +146,7 @@ class MainActivity : AppCompatActivity() {
                         intent.putExtra(EXTRA_ADDRESS, address)
                         startActivity(intent)
                     }
+
             }
 
             if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(intent.action)) {
@@ -149,11 +157,15 @@ class MainActivity : AppCompatActivity() {
                 if (nameList.isEmpty()||nameList.size==0||nameList==null){
                     Toast.makeText(context, "No devices found!", Toast.LENGTH_LONG)
                         .show()
-                    pairedDeviceList()
+                    select_device.layoutParams.height= params
+
+                    pairedDeviceList("NotA")
+
                 }
                 else{
                     Toast.makeText(context,"Devices found: " +nameList.size, Toast.LENGTH_LONG)
                         .show()
+                    pairedDeviceList("Available")
                 }
             }
         }
@@ -163,12 +175,8 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    private fun pairedDeviceList(){
-
+    private fun pairedDeviceList(status:String){
         pdevices = bAdapter.bondedDevices
-        textselect.text = "Paired Devices"
-
-
         val hiddenlist : ArrayList<BluetoothDevice> = ArrayList()
         val nList : ArrayList<String> = ArrayList()
         if (!pdevices.isEmpty()){
@@ -179,18 +187,38 @@ class MainActivity : AppCompatActivity() {
             }
         }else{
             Toast.makeText(this,  "no paired bluetooth devices found", Toast.LENGTH_LONG).show()
-
         }
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,nList)
-        select_device.adapter = adapter
-        select_device.onItemClickListener= AdapterView.OnItemClickListener{_,_,position,_->
-            val device: BluetoothDevice= hiddenlist[position]
-            val address: String = device.address
-            
-            val intent = Intent (this, ControlActivity::class.java)
-            intent.putExtra(EXTRA_ADDRESS,address)
-            startActivity(intent)
+
+        if(status=="NotA") {
+            select_device2.visibility=View.GONE
+            textselect2.visibility=View.GONE
+            textselect.text = "Paired Devices"
+            select_device.adapter = adapter
+            select_device.onItemClickListener =
+                AdapterView.OnItemClickListener { _, _, position, _ ->
+                    val device: BluetoothDevice = hiddenlist[position]
+                    val address: String = device.address
+                    val intent = Intent(this, ControlActivity::class.java)
+                    intent.putExtra(EXTRA_ADDRESS, address)
+                    startActivity(intent)
+                }
+
+        }
+        else{
+            select_device2.visibility=View.VISIBLE
+            textselect2.visibility=View.VISIBLE
+            select_device2.adapter = adapter
+            select_device2.onItemClickListener =
+                AdapterView.OnItemClickListener { _, _, position, _ ->
+                    val device: BluetoothDevice = hiddenlist[position]
+                    val address: String = device.address
+                    val intent = Intent(this, ControlActivity::class.java)
+                    intent.putExtra(EXTRA_ADDRESS, address)
+                    startActivity(intent)
+                }
+
         }
     }
 }
