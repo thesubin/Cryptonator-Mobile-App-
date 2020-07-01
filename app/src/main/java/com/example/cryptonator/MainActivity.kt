@@ -44,11 +44,12 @@ class MainActivity : AppCompatActivity() {
             select_device.visibility=View.VISIBLE
             btnRefresh.visibility=View.VISIBLE
             textselect.visibility=View.VISIBLE
-            bAdapter.startDiscovery()
             registerReceiver()
+            bAdapter.startDiscovery()
         }
 
         btnRefresh.setOnClickListener{
+            registerReceiver()
             bAdapter.startDiscovery()
             nameList.clear()
             list.clear()
@@ -76,9 +77,8 @@ class MainActivity : AppCompatActivity() {
                         select_device.visibility=View.VISIBLE
                         btnRefresh.visibility=View.VISIBLE
                         textselect.visibility=View.VISIBLE
-                        bAdapter.startDiscovery()
                         registerReceiver()
-
+                        bAdapter.startDiscovery()
 
                     }
                 else{

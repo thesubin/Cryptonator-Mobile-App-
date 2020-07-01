@@ -96,6 +96,7 @@ class ControlActivity: AppCompatActivity() {
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("Verify to Unlock")
+            .setTitle("Verify to Unlock")
             .setDescription("One Step from unlocking your files")
             .setNegativeButtonText("use email to recover")
             .build()
@@ -107,6 +108,7 @@ class ControlActivity: AppCompatActivity() {
 
 
         private fun verified(){
+
             val intent = Intent (this,VerifiedActivity::class.java)
                intent.putExtra(m_address, m_address)
             startActivity(intent)
@@ -219,13 +221,13 @@ class ControlActivity: AppCompatActivity() {
                 val tea = Toast.makeText(context, "Couldn't Connect", Toast.LENGTH_LONG)
                 tea.show()
                 //ENABLE THIS AFTER CREATING SERVER
-//                val intent = Intent (context,MainActivity::class.java)
-//
-//                context.startActivity(intent)
+               val intent = Intent (context,MainActivity::class.java)
+               context.startActivity(intent)
 
 //                (context as ControlActivity).finish()
             }else{
                 m_isConnected = true
+
             }
             m_progress.dismiss()
 
