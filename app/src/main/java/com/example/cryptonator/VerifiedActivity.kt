@@ -37,7 +37,7 @@ class VerifiedActivity :AppCompatActivity(){
         val testingName: BluetoothDevice = m_bluetoothAdapter.getRemoteDevice(deviceaddress)
 
         device_name.text =  testingName.name
-        run()
+    //    run()
         Disconnectbutton.setOnClickListener{disconnect()}
 
     }
@@ -50,7 +50,7 @@ class VerifiedActivity :AppCompatActivity(){
             }
         }
     }
-    fun run() {
+    private fun run() {
         val mmInStream: InputStream
         var tempInStream: InputStream? = null
 
@@ -83,14 +83,16 @@ class VerifiedActivity :AppCompatActivity(){
             handler.postDelayed(runnable, delay.toLong())
             try {
 
-                val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-                val randomString = (1..64)
-                    .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
-                    .map(charPool::get)
-                    .joinToString("");
+//                val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+//                val randomString = (1..64)
+//                    .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+//                    .map(charPool::get)
+//                    .joinToString("");
+                var keybits =kotlin.random.Random.nextBits(64);
+                var randomString = "K$keybits";
                 Toast.makeText(applicationContext, "Sending Key:$randomString", Toast.LENGTH_LONG).show()
 
-                sendCommand(randomString)
+                sendCommand("$randomString")
 
             }
             catch(e:IOException){
