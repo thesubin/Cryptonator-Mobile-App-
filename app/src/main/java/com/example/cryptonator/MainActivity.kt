@@ -1,6 +1,5 @@
 package com.example.cryptonator
 
-import android.app.Activity
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -8,16 +7,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     val list: ArrayList<BluetoothDevice> = ArrayList()
     val nameList: ArrayList<String> = ArrayList()
      var params: Int = 0
+    private val btManager: BTManager? = null
 
     companion object{
         val EXTRA_ADDRESS: String= "Device_address"
