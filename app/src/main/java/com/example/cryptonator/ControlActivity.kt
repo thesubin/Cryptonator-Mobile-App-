@@ -29,10 +29,6 @@ import java.util.*
 
 class ControlActivity: AppCompatActivity() {
     companion object {
-        fun sendCommand() {
-            TODO("Not yet implemented")
-        }
-
         var m_myUUID: UUID= UUID.fromString("85cdc8c0-9119-11ea-bb37-0242ac130002")
         var m_bluetoothSocket: BluetoothSocket?= null
         lateinit var m_progress:ProgressDialog
@@ -164,19 +160,7 @@ class ControlActivity: AppCompatActivity() {
     }
 
     private fun sendCommand(){
-        var androidId :String= Settings.Secure.getString(contentResolver,Settings.Secure.ANDROID_ID)
-        var sendData:String="M$androidId"
 
-        if(m_bluetoothSocket!= null){
-            try{
-                Toast.makeText(applicationContext, "Sending Key:$sendData", Toast.LENGTH_LONG).show()
-
-                m_bluetoothSocket!!.outputStream.write(sendData.toByteArray())
-
-            }catch(e:IOException){
-                e.printStackTrace()
-            }
-        }
     }
 
     private fun disconnect(){
@@ -239,12 +223,24 @@ class ControlActivity: AppCompatActivity() {
 //                (context as ControlActivity).finish()
             }else{
                 m_isConnected = true
-             ControlActivity.sendCommand();
+                var androidId :String= Settings.Secure.getString(this.context.getContentResolver(),Settings.Secure.ANDROID_ID)
+                var sendData:String="M$androidId"
+                if(m_bluetoothSocket!= null){
+                    try{
+                        Toast.makeText(this.context, "Sending Key:$sendData", Toast.LENGTH_LONG).show()
 
+                        m_bluetoothSocket!!.outputStream.write(sendData.toByteArray())
+
+                    }catch(e:IOException){
+                        e.printStackTrace()
+                    }
+                }
             }
             m_progress.dismiss()
 
         }
+
+
 
     }
 
