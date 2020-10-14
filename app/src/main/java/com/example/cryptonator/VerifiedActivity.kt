@@ -63,10 +63,9 @@ class VerifiedActivity :AppCompatActivity(){
 
 
     override fun onResume() {
-
-        var androidId :String=Settings.Secure.getString(contentResolver,Settings.Secure.ANDROID_ID)
-            sendCommand("M$androidId")
-        handler.postDelayed(Runnable {
+//        var androidId :String= Settings.Secure.getString(contentResolver,Settings.Secure.ANDROID_ID)
+//        sendCommand("M$androidId")
+         handler.postDelayed(Runnable {
             handler.postDelayed(runnable, delay.toLong())
             try {
 
