@@ -1,5 +1,6 @@
 package com.example.cryptonator
 
+import android.app.KeyguardManager
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -33,6 +34,8 @@ class ControlActivity: AppCompatActivity() {
         var m_bluetoothSocket: BluetoothSocket?= null
         lateinit var m_progress:ProgressDialog
         var m_isConnected:Boolean=false
+        var m_isEncrypted:Boolean=false
+
         lateinit var m_bluetoothAdapter: BluetoothAdapter
         lateinit var m_address: String
         lateinit var nameBlue:String// test
@@ -40,6 +43,7 @@ class ControlActivity: AppCompatActivity() {
     }
         private lateinit var progress: ProgressDialog
         lateinit var biometricManager: BiometricManager
+    lateinit var  keyguard:KeyguardManager
         private val TAG= MainActivity::getLocalClassName.toString()
         private lateinit var biometricPrompt: BiometricPrompt
         private  lateinit var promptInfo: BiometricPrompt.PromptInfo
@@ -110,7 +114,7 @@ class ControlActivity: AppCompatActivity() {
 
 
         private fun verified(){
-
+                m_isEncrypted=true;
             val intent = Intent (this,VerifiedActivity::class.java)
                intent.putExtra(m_address, m_address)
             startActivity(intent)
@@ -125,9 +129,31 @@ class ControlActivity: AppCompatActivity() {
         when(biometricManager.canAuthenticate()){
                 BiometricManager.BIOMETRIC_SUCCESS->
                     Log.d(TAG,"CheckBiometricStatus: App can use biometric Authentication")
-                BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE->
-                    Log.d(TAG,"CheckBiometricStatus: Biometrics features cureently unavailable")
-               BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED->
+                BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE-> {
+                    @RequiresApi(Build.VERSION_CODES.O)
+
+                    if(keyguard.isKeyguardLocked){
+                        keyguard.requestDismissKeyguard(this,
+                            object :KeyguardManager.KeyguardDismissCallback(){
+                                override fun onDismissSucceeded() {
+                                    super.onDismissSucceeded()
+                                    verified()
+                                }
+
+                                override fun onDismissCancelled() {
+                                    super.onDismissCancelled()
+                               toasty("Authentication Failed")
+                                }
+
+                                override fun onDismissError() {
+                                    super.onDismissError()
+                                    toasty("Authentication Error")
+
+                                }
+                        })
+                    }
+                    Log.d(TAG, "CheckBiometricStatus: Biometrics features cureently unavailable")
+                }BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED->
                     Log.d(TAG,"CheckBiometricStatus: The User hasnt enrolled any biometrics")
                 BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE->
                     Log.d(TAG,"CheckBiometricStatus: No Biometric Features available in this device")

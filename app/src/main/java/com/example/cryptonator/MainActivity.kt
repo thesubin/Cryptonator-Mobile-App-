@@ -39,7 +39,12 @@ class MainActivity : AppCompatActivity() {
 
         bAdapter= BluetoothAdapter.getDefaultAdapter()
         if(bAdapter.isEnabled){
+            if(ControlActivity.m_isConnected){
+                val intent = Intent (this,VerifiedActivity::class.java)
+                intent.putExtra(ControlActivity.m_address, ControlActivity.m_address)
+                startActivity(intent)
 
+            }
             Onbutton.visibility=View.GONE
             select_device.visibility=View.VISIBLE
             btnRefresh.visibility=View.VISIBLE
