@@ -1,5 +1,6 @@
 package com.example.cryptonator
 
+
 import android.app.KeyguardManager
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
@@ -9,22 +10,19 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.*
+import android.os.AsyncTask
+import android.os.Build
+import android.os.Bundle
 import android.provider.Settings
-
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
-
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-
-
 import kotlinx.android.synthetic.main.control_act.*
 import java.io.IOException
-import java.lang.reflect.Method
 import java.util.*
 
 
@@ -48,8 +46,13 @@ class ControlActivity: AppCompatActivity() {
         private lateinit var biometricPrompt: BiometricPrompt
         private  lateinit var promptInfo: BiometricPrompt.PromptInfo
 
+    override fun onBackPressed() {
+// super.onBackPressed();
+// Not calling **super**, disables back button in current screen.
+    }
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.control_act)
         m_address = intent.getStringExtra(MainActivity.EXTRA_ADDRESS)

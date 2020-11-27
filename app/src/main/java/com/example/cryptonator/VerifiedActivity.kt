@@ -31,6 +31,12 @@ class VerifiedActivity :AppCompatActivity(){
 
     private val btManager: BTManager? = null
 
+    override fun onBackPressed() {
+// super.onBackPressed();
+// Not calling **super**, disables back button in current screen.
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.verify_act)
@@ -74,7 +80,7 @@ class VerifiedActivity :AppCompatActivity(){
 //                    .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
 //                    .map(charPool::get)
 //                    .joinToString("");
-                var keybits =kotlin.random.Random.nextBits(64);
+                var keybits =kotlin.random.Random.nextBits(184);
                 var randomString = "K$keybits";
                 sendCommand("$randomString")
 

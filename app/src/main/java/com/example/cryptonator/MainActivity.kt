@@ -32,6 +32,13 @@ class MainActivity : AppCompatActivity() {
     companion object{
         val EXTRA_ADDRESS: String= "Device_address"
     }
+
+    override fun onBackPressed() {
+// super.onBackPressed();
+// Not calling **super**, disables back button in current screen.
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
