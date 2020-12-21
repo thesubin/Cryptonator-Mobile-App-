@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.nfc.Tag
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
@@ -23,6 +24,8 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.control_act.*
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.util.*
 
 
@@ -37,14 +40,17 @@ class ControlActivity: AppCompatActivity() {
         lateinit var m_bluetoothAdapter: BluetoothAdapter
         lateinit var m_address: String
         lateinit var nameBlue:String// test
+        private var connectionThread: ConnectedThread? = null
 
+        private val TAG= MainActivity::getLocalClassName.toString()
     }
         private lateinit var progress: ProgressDialog
         lateinit var biometricManager: BiometricManager
     lateinit var  keyguard:KeyguardManager
-        private val TAG= MainActivity::getLocalClassName.toString()
         private lateinit var biometricPrompt: BiometricPrompt
         private  lateinit var promptInfo: BiometricPrompt.PromptInfo
+
+
 
     override fun onBackPressed() {
 // super.onBackPressed();
@@ -61,7 +67,7 @@ class ControlActivity: AppCompatActivity() {
         nameBlue= testingName.name//test
         device_name.text = nameBlue//test
         Disconnectbutton.setOnClickListener{disconnect()}
-
+        connectionThread=null
 
             if (testingName.bondState == BluetoothDevice.BOND_BONDED) {
 
@@ -114,6 +120,14 @@ class ControlActivity: AppCompatActivity() {
         Unlockbutton.setOnClickListener { biometricPrompt.authenticate(promptInfo) }
 
     }
+
+//    public fun connect(divId:BluetoothSocket?){
+//
+//        connectionThread = ConnectedThread(divId)
+//        connectionThread!!.run()
+//        Toast.makeText(applicationContext, "Im here", Toast.LENGTH_LONG).show()
+//
+//    }
 
 
         private fun verified(){
@@ -239,6 +253,7 @@ class ControlActivity: AppCompatActivity() {
         }
 
         override fun onPostExecute(result: String?) {
+
             super.onPostExecute(result)
             if(!connectSucess){
                 Log.i("data","Couldnt connect")
@@ -252,17 +267,25 @@ class ControlActivity: AppCompatActivity() {
 //                (context as ControlActivity).finish()
             }else{
                 m_isConnected = true
+
+
                 var androidId :String= Settings.Secure.getString(this.context.getContentResolver(),Settings.Secure.ANDROID_ID)
                 var sendData:String="M$androidId"
                 if(m_bluetoothSocket!= null){
                     try{
-                        Toast.makeText(this.context, "Sending Key:$sendData", Toast.LENGTH_LONG).show()
+                        m_bluetoothSocket!!.outputStream.write(sendData.toByteArray());
+                        val tea = Toast.makeText(context, "Sending $sendData", Toast.LENGTH_LONG)
+                        tea.show()
 
-                        m_bluetoothSocket!!.outputStream.write(sendData.toByteArray())
+                        connectionThread = ConnectedThread(m_bluetoothSocket)
+                        connectionThread!!.run()
+
+
 
                     }catch(e:IOException){
                         e.printStackTrace()
                     }
+
                 }
             }
             m_progress.dismiss()
@@ -297,4 +320,89 @@ class ControlActivity: AppCompatActivity() {
             }
         }
     }
+
+    private  class ConnectedThread(private val mmSocket: BluetoothSocket?) : Thread() {
+        private val mmInStream: InputStream?
+        private val mmOutStream: OutputStream?
+        private var thread: Thread?
+        //Method for reading from bluetooth device
+        override fun run() {
+
+            thread = object : Thread() {
+                override fun run() {
+
+                    try {
+                        while (true) {
+
+
+                            try {
+
+
+                                val buffer =
+                                    ByteArray(1024) // buffer store for the stream
+
+                                //Blocking call
+                                val bytes =
+                                    mmInStream!!.read(buffer) // bytes returned from read()
+                                val message = String(buffer, 0, bytes)
+
+                                //Give the received message to the main activity to be displayed
+//                             //   mainActivity.displayMessage(message)
+//                                    Toast.makeText(context, "Receiving :${message}", Toast.LENGTH_LONG).show()
+//                                   nameBlue=message
+
+                                Log.d(TAG,message)
+
+
+                            } catch (e: IOException) {
+
+                                break
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            (thread as Thread).start()
+        }
+
+        //TODO make this stop crashing if not connected
+        /* Call this from the main activity to send data to the remote device */
+        fun write(message: String) {
+            try {
+                val bytes = message.toByteArray()
+                mmOutStream!!.write(bytes)
+            } catch (e: IOException) {
+            }
+        }
+
+        /* Call this from the main activity to shutdown the connection */
+        fun cancel() {
+            try {
+                thread!!.interrupt()
+                thread = null
+                mmInStream!!.close()
+                mmOutStream!!.close()
+                mmSocket!!.close()
+            } catch (e: IOException) {
+            }
+        }
+
+        init {
+            var tmpIn: InputStream? = null
+            var tmpOut: OutputStream? = null
+
+
+            thread = null
+            try {
+                tmpIn = mmSocket!!.inputStream
+                tmpOut = mmSocket.outputStream
+            } catch (e: IOException) {
+            }
+            mmInStream = tmpIn
+            mmOutStream = tmpOut
+        }
+    }
+
 }
