@@ -1,5 +1,6 @@
 package com.example.cryptonator
 
+import android.Manifest
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -7,6 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -15,6 +17,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -41,10 +45,25 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        bAdapter= BluetoothAdapter.getDefaultAdapter();
+
         setContentView(R.layout.activity_main)
         params= select_device.layoutParams.height
 
-        bAdapter= BluetoothAdapter.getDefaultAdapter()
+        if (ContextCompat.checkSelfPermission(this@MainActivity,
+                Manifest.permission.ACCESS_FINE_LOCATION) !==
+            PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(this@MainActivity,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            } else {
+                ActivityCompat.requestPermissions(this@MainActivity,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            }
+        }
+
+
         if(bAdapter.isEnabled){
             if(ControlActivity.m_isConnected){
                 val intent = Intent (this,VerifiedActivity::class.java)
@@ -55,16 +74,15 @@ class MainActivity : AppCompatActivity() {
             Onbutton.visibility=View.GONE
             select_device.visibility=View.VISIBLE
             btnRefresh.visibility=View.VISIBLE
-            textselect.visibility=View.VISIBLE
-            registerReceiver()
-            bAdapter.startDiscovery()
+            textselect.visibility=View.VISIBLE;
+            registerReceiver();
+            bAdapter.startDiscovery();
         }
 
         btnRefresh.setOnClickListener{
-            registerReceiver()
-            bAdapter.startDiscovery()
-            nameList.clear()
-            list.clear()
+            bAdapter.startDiscovery();
+            nameList.clear();
+            list.clear();
         }
 
         Onbutton.setOnClickListener {
@@ -79,7 +97,26 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
+                                            grantResults: IntArray) {
+        when (requestCode) {
+            1 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] ==
+                    PackageManager.PERMISSION_GRANTED) {
+                    if ((ContextCompat.checkSelfPermission(this@MainActivity,
+                            Manifest.permission.ACCESS_FINE_LOCATION) ===
+                                PackageManager.PERMISSION_GRANTED)) {
+                        Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
+                        bAdapter= BluetoothAdapter.getDefaultAdapter()
 
+                    }
+                } else {
+                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+        }
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         if(requestCode == REQUEST_CODE_ENABLE_BT){
@@ -135,29 +172,29 @@ class MainActivity : AppCompatActivity() {
                 )
             }
             if (BluetoothDevice.ACTION_FOUND.equals(intent.action)) {
-                val device =
-                    intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-
-                list.add(device)
-                nameList.add(device.name)
-                Log.i("device", "" + device)
-
-                textselect.text = "Available Devices"
-                val adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, nameList)
-                select_device.adapter = adapter
-
-                select_device.layoutParams.height= ViewGroup.LayoutParams.WRAP_CONTENT+240
-
-                select_device.onItemClickListener =
-                    AdapterView.OnItemClickListener { _, _, position, _ ->
-                        val device: BluetoothDevice = list[position]
-                        val address: String = device.address
-
-
-                        val intent = Intent(context, ControlActivity::class.java)
-                        intent.putExtra(EXTRA_ADDRESS, address)
-                        startActivity(intent)
-                    }
+////                val device =
+////                    intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+////
+////                list.add(device)
+////                nameList.add(device.name)
+////                Log.i("device", "" + device)
+////
+////                textselect.text = "Available Devices"
+////                val adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, nameList)
+////                select_device.adapter = adapter
+////
+////                select_device.layoutParams.height= ViewGroup.LayoutParams.WRAP_CONTENT+240
+////
+////                select_device.onItemClickListener =
+////                    AdapterView.OnItemClickListener { _, _, position, _ ->
+////                        val device: BluetoothDevice = list[position]
+////                        val address: String = device.address
+////
+////
+////                        val intent = Intent(context, ControlActivity::class.java)
+////                        intent.putExtra(EXTRA_ADDRESS, address)
+////                        startActivity(intent)
+//                    }
 
             }
 

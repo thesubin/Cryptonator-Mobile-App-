@@ -10,7 +10,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.nfc.Tag
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
@@ -30,6 +29,12 @@ import java.util.*
 
 
 class ControlActivity: AppCompatActivity() {
+
+        private object HOLDER {
+            val INSTANCE = ControlActivity()
+        }
+
+
     companion object {
         var m_myUUID: UUID= UUID.fromString("85cdc8c0-9119-11ea-bb37-0242ac130002")
         var m_bluetoothSocket: BluetoothSocket?= null
@@ -43,6 +48,8 @@ class ControlActivity: AppCompatActivity() {
         private var connectionThread: ConnectedThread? = null
 
         private val TAG= MainActivity::getLocalClassName.toString()
+        val instance: ControlActivity by lazy { HOLDER.INSTANCE }
+
     }
         private lateinit var progress: ProgressDialog
         lateinit var biometricManager: BiometricManager
@@ -325,6 +332,8 @@ class ControlActivity: AppCompatActivity() {
         private val mmInStream: InputStream?
         private val mmOutStream: OutputStream?
         private var thread: Thread?
+        private val helperClass =HelperClass();
+
         //Method for reading from bluetooth device
         override fun run() {
 
@@ -348,12 +357,14 @@ class ControlActivity: AppCompatActivity() {
 
                                 //Give the received message to the main activity to be displayed
 //                             //   mainActivity.displayMessage(message)
-//                                    Toast.makeText(context, "Receiving :${message}", Toast.LENGTH_LONG).show()
+//                             Toast.makeText(applicationcontext, "Receiving :${message}", Toast.LENGTH_LONG).show()
 //                                   nameBlue=message
 
+//                                VerifiedActivity.instance.device_name.text=message;
                                 Log.d(TAG,message)
-
-
+                                println(message)
+                                  helperClass.dataParser(message);
+                                println("second: "+message)
                             } catch (e: IOException) {
 
                                 break
@@ -404,5 +415,6 @@ class ControlActivity: AppCompatActivity() {
             mmOutStream = tmpOut
         }
     }
+
 
 }

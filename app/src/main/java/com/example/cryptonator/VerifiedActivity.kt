@@ -18,10 +18,18 @@ import java.io.OutputStream
 
 
 class VerifiedActivity :AppCompatActivity(){
+
+        private object HOLDER {
+            val INSTANCE = VerifiedActivity()
+        }
+
+
     companion object{
 
+        val instance: VerifiedActivity by lazy { VerifiedActivity.HOLDER.INSTANCE }
 
         val DEVICE_ADDRESS: String="address"
+
     }
     private lateinit var deviceaddress:String
     lateinit var m_bluetoothAdapter: BluetoothAdapter
@@ -36,7 +44,10 @@ class VerifiedActivity :AppCompatActivity(){
 // Not calling **super**, disables back button in current screen.
     }
 
+            fun toasty (value:String?){
+               Toast.makeText(applicationContext, value, Toast.LENGTH_LONG).show()
 
+           }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.verify_act)
