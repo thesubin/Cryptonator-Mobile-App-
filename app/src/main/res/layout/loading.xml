@@ -13,7 +13,9 @@
         android:layout_height="34dp"
         android:textAlignment="center"
         android:textSize="25dp"
-        android:text="Connecting to:"
+        android:text=" "
+        android:id="@+id/mainId"
+
         />
     <TextView
         android:id="@+id/device_name"

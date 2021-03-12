@@ -164,13 +164,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(intent.action)) {
-                m_progress = ProgressDialog.show(
-                    context,
-                    "Searching for Bluetooth devices",
-                    "Please Wait...."
-                )
-            }
+//            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(intent.action)) {
+////                m_progress = ProgressDialog.show(
+////                    context,
+////                    "Searching for Bluetooth devices",
+////                    "Please Wait...."
+////                )
+//            }
             if (BluetoothDevice.ACTION_FOUND.equals(intent.action)) {
 ////                val device =
 ////                    intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
@@ -198,10 +198,10 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-            if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(intent.action)) {
+            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(intent.action)) {
                 Toast.makeText(context, "Search Completed", Toast.LENGTH_LONG)
                     .show()
-                m_progress.dismiss()
+                //m_progress.dismiss()
 
                 if (nameList.isEmpty()||nameList.size==0||nameList==null){
                     Toast.makeText(context, "No devices found!", Toast.LENGTH_LONG)

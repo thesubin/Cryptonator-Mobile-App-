@@ -73,7 +73,6 @@ class ControlActivity: AppCompatActivity() {
         val testingName: BluetoothDevice= m_bluetoothAdapter.getRemoteDevice(m_address) //test
         nameBlue= testingName.name//test
         device_name.text = nameBlue//test
-        Disconnectbutton.setOnClickListener{disconnect()}
         connectionThread=null
 
             if (testingName.bondState == BluetoothDevice.BOND_BONDED) {
@@ -124,7 +123,6 @@ class ControlActivity: AppCompatActivity() {
 
 
 
-        Unlockbutton.setOnClickListener { biometricPrompt.authenticate(promptInfo) }
 
     }
 
@@ -237,7 +235,7 @@ class ControlActivity: AppCompatActivity() {
 
         override fun onPreExecute() {
             super.onPreExecute()
-            m_progress = ProgressDialog.show(context, "Connecting", "Please Wait....")
+//            m_progress = ProgressDialog.show(context, "Connecting", "Please Wait....")
 
 
         }
@@ -268,8 +266,8 @@ class ControlActivity: AppCompatActivity() {
                 val tea = Toast.makeText(context, "Couldn't Connect", Toast.LENGTH_LONG)
                 tea.show()
                 //ENABLE THIS AFTER CREATING SERVER
-//               val intent = Intent (context,MainActivity::class.java)
-//               context.startActivity(intent)
+               val intent = Intent (context,MainActivity::class.java)
+               context.startActivity(intent)
 
 //                (context as ControlActivity).finish()
             }else{
@@ -282,9 +280,9 @@ class ControlActivity: AppCompatActivity() {
                     try{
                         m_bluetoothSocket!!.outputStream.write(sendData.toByteArray());
                         val tea = Toast.makeText(context, "Sending $sendData", Toast.LENGTH_LONG)
-                        tea.show()
+                        tea.show()                              //Send Key
 
-                        connectionThread = ConnectedThread(m_bluetoothSocket)
+                        connectionThread = ConnectedThread(m_bluetoothSocket,this.context)
                         connectionThread!!.run()
 
 
@@ -295,7 +293,7 @@ class ControlActivity: AppCompatActivity() {
 
                 }
             }
-            m_progress.dismiss()
+//            m_progress.dismiss()
 
         }
 
@@ -328,11 +326,16 @@ class ControlActivity: AppCompatActivity() {
         }
     }
 
-    private  class ConnectedThread(private val mmSocket: BluetoothSocket?) : Thread() {
+    private  class ConnectedThread(private val mmSocket: BluetoothSocket?,c:Context) : Thread() {
         private val mmInStream: InputStream?
         private val mmOutStream: OutputStream?
         private var thread: Thread?
-        private val helperClass =HelperClass();
+        private val context: Context
+
+        init {
+            this.context=c;
+        }
+        private val helperClass =HelperClass(context);
 
         //Method for reading from bluetooth device
         override fun run() {
@@ -364,7 +367,7 @@ class ControlActivity: AppCompatActivity() {
                                 Log.d(TAG,message)
                                 println(message)
                                   helperClass.dataParser(message);
-                                println("second: "+message)
+
                             } catch (e: IOException) {
 
                                 break

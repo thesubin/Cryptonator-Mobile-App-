@@ -49,6 +49,7 @@ class VerifiedActivity :AppCompatActivity(){
 
            }
     override fun onCreate(savedInstanceState: Bundle?) {
+        println("Verified Activity")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.verify_act)
         deviceaddress = intent.getStringExtra(ControlActivity.m_address)
