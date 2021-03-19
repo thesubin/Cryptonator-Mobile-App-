@@ -46,7 +46,7 @@ class HelperClass(c:Context){
                 }
         }
     }
-   public fun stateDefinition(data:String){
+   private fun stateDefinition(data:String){
        val header =  data.substring(0,1);
        val body =  data.substring(1,data.length);
        when(header){
