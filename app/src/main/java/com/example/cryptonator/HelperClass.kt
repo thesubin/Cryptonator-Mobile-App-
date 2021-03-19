@@ -11,11 +11,12 @@ import java.lang.Exception
 
 class HelperClass(c:Context){
     private val context: Context
-
+    private lateinit var dbHelper:DBHelper
         init {
             this.context=c;
         }
     private fun HelperClass(){
+             dbHelper= DBHelper(context)
 
      }
    public fun dataParser(message: String){
@@ -26,7 +27,23 @@ class HelperClass(c:Context){
         when(header){
             "S"-> stateDefinition(body)  //State DEFINITION
             "T"-> print(body)
+            "A"->Acknowledgement(body)
 
+        }
+    }
+    private  fun Acknowledgement(data: String){
+        val header =  data.substring(0,1);
+        val body =  data.substring(1,data.length);
+        when(header) {
+            "K" ->
+                try {
+
+                        dbHelper.Update(body)
+
+                      //Switch Tabs Decryption
+                } catch (e: Exception) {
+                    println(e.stackTrace)
+                }
         }
     }
    public fun stateDefinition(data:String){
