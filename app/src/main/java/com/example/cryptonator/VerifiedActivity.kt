@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.verify_act.*
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.security.SecureRandom
 
 
 class VerifiedActivity :AppCompatActivity(){
@@ -31,6 +32,7 @@ class VerifiedActivity :AppCompatActivity(){
         val DEVICE_ADDRESS: String="address"
 
     }
+    private lateinit var dbHelper:DBHelper
     private lateinit var deviceaddress:String
     lateinit var m_bluetoothAdapter: BluetoothAdapter
     var deviceStatus: BluetoothSocket?=null;
@@ -52,8 +54,10 @@ class VerifiedActivity :AppCompatActivity(){
         println("Verified Activity")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.verify_act)
-        deviceaddress = intent.getStringExtra(ControlActivity.m_address)
+        deviceaddress = intent.getStringExtra("Address")
         deviceStatus = ControlActivity.m_bluetoothSocket;
+
+        dbHelper= DBHelper(this)
 
         m_bluetoothAdapter= BluetoothAdapter.getDefaultAdapter()
         val testingName: BluetoothDevice = m_bluetoothAdapter.getRemoteDevice(deviceaddress)
@@ -81,19 +85,30 @@ class VerifiedActivity :AppCompatActivity(){
     override fun onResume() {
 //        var androidId :String= Settings.Secure.getString(contentResolver,Settings.Secure.ANDROID_ID)
 //        sendCommand("M$androidId")
+        sendCommand(dbHelper.GetDB().toString())
          handler.postDelayed(Runnable {
             handler.postDelayed(runnable, delay.toLong())
             try {
 
-//                val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-//                val randomString = (1..64)
+//                val charPool: List<IntRange> =  (0..255)
+//                val randomString = (1..24)
 //                    .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
 //                    .map(charPool::get)
 //                    .joinToString("");
-                var keybits =kotlin.random.Random.nextBytes(50);
-                var randomString = "K$keybits";
-               
-                sendCommand("$randomString")
+                var randomKey:IntArray = IntArray(24);
+                for(i in 1..23){
+                    randomKey[i]=kotlin.random.Random.nextInt(0, 255)
+
+                }
+
+//                var keybits =kotlin.random.Random.nextBytes(75);
+//                var keybits = ByteArray(24)
+//                kotlin.random.Random.nextBytes(keybits);
+
+                println("HERE"+randomKey);
+//                var randomString = "K$keybits.toSt";
+//
+//                sendCommand("$randomString")
 
             }
             catch(e:IOException){

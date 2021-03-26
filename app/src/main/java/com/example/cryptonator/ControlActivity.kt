@@ -68,7 +68,7 @@ class ControlActivity: AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.control_act)
-        m_address = intent.getStringExtra(MainActivity.EXTRA_ADDRESS)
+        m_address = intent.getStringExtra("Device_address")
         m_bluetoothAdapter= BluetoothAdapter.getDefaultAdapter()
         val testingName: BluetoothDevice= m_bluetoothAdapter.getRemoteDevice(m_address) //test
         nameBlue= testingName.name//test
@@ -335,7 +335,7 @@ class ControlActivity: AppCompatActivity() {
         init {
             this.context=c;
         }
-        private val helperClass =HelperClass(context);
+        private val helperClass =HelperClass(context, m_address);
 
         //Method for reading from bluetooth device
         override fun run() {

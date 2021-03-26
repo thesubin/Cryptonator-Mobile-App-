@@ -13,7 +13,7 @@ class Loading:AppCompatActivity() {
         val INSTANCE = Loading()
     }
     companion object {
-       val instance: EncryptedPage by lazy { EncryptedPage.HOLDER.INSTANCE }
+       val instance: Loading by lazy {Loading.HOLDER.INSTANCE }
 
     }
 

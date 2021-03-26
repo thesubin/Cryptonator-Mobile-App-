@@ -9,11 +9,13 @@ import kotlinx.android.synthetic.main.loading.*
 import java.lang.Exception
 
 
-class HelperClass(c:Context){
+class HelperClass(c:Context,m_address:String){
     private val context: Context
+    private val address:String
     private lateinit var dbHelper:DBHelper
         init {
             this.context=c;
+            this.address=m_address
         }
     private fun HelperClass(){
              dbHelper= DBHelper(context)
@@ -53,7 +55,7 @@ class HelperClass(c:Context){
            "D"->
                try{
                    val intent = Intent(context, VerifiedActivity::class.java)
-                   intent.putExtra(ControlActivity.m_address, ControlActivity.m_address)
+                   intent.putExtra("Address", address)
                    context.startActivity(intent)  //Switch Tabs Decryption
                }
                catch (e:Exception){
@@ -63,7 +65,7 @@ class HelperClass(c:Context){
            "E"->
                try{
                    val intent = Intent(context, EncryptedPage::class.java)
-                   intent.putExtra(MainActivity.EXTRA_ADDRESS, ControlActivity.m_address)
+                   intent.putExtra("Device_address", address)
                    context.startActivity(intent)  //Switch Tabs Decryption
 
 
