@@ -108,7 +108,7 @@ class VerifiedActivity :AppCompatActivity(){
                 println("HERE"+randomKey);
 //                var randomString = "K$keybits.toSt";
 //
-//                sendCommand("$randomString")
+               sendCommand("$randomKey")
 
             }
             catch(e:IOException){
