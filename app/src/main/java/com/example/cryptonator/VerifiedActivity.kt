@@ -6,16 +6,13 @@ import android.bluetooth.BluetoothSocket
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.cryptonator.ControlActivity.Companion.m_bluetoothSocket
 import com.example.cryptonator.ControlActivity.Companion.m_isConnected
 import kotlinx.android.synthetic.main.verify_act.*
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
-import java.security.SecureRandom
+import java.lang.StringBuilder
 
 
 class VerifiedActivity :AppCompatActivity(){
@@ -90,25 +87,46 @@ class VerifiedActivity :AppCompatActivity(){
             handler.postDelayed(runnable, delay.toLong())
             try {
 
-//                val charPool: List<IntRange> =  (0..255)
-//                val randomString = (1..24)
-//                    .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
-//                    .map(charPool::get)
-//                    .joinToString("");
-                var randomKey:IntArray = IntArray(24);
-                for(i in 1..23){
-                    randomKey[i]=kotlin.random.Random.nextInt(0, 255)
+                val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+//               val randomString = (1..64)
+//                var keybits =kotlin.random.Random.nextBytes(50);
+//                var randomString = "K$keybits";
 
-                }
+//                sendCommand("$randomString")
 
 //                var keybits =kotlin.random.Random.nextBytes(75);
 //                var keybits = ByteArray(24)
 //                kotlin.random.Random.nextBytes(keybits);
 
-                println("HERE"+randomKey);
+//                println("HERE"+randomKey);
 //                var randomString = "K$keybits.toSt";
 //
-               sendCommand("$randomKey")
+//               sendCommand("$randomKey")
+
+                val AlphaNumericString = ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                        + "0123456789"
+                        + "abcdefghijklmnopqrstuvxyz")
+
+                // create StringBuffer size of AlphaNumericString
+
+                // create StringBuffer size of AlphaNumericString
+                val sb = StringBuilder(24)
+
+                for (i in 0 until 24) {
+
+                    // generate a random number between
+                    // 0 to AlphaNumericString variable length
+                    val index = (AlphaNumericString.length
+                            * Math.random()).toInt()
+
+                    // add Character one by one in end of sb
+                    sb.append(
+                        AlphaNumericString[index]
+                    )
+                }
+                var randomString = "K${sb.toString()}";
+                sendCommand("$randomString")
+
 
             }
             catch(e:IOException){
