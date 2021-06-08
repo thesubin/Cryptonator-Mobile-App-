@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private val REQUEST_CODE_ENABLE_BT: Int = 1
     private lateinit var bAdapter:BluetoothAdapter
     private lateinit var  pdevices: Set<BluetoothDevice>
+
     lateinit var m_progress:ProgressDialog
     val list: ArrayList<BluetoothDevice> = ArrayList()
     val nameList: ArrayList<String> = ArrayList()
@@ -35,6 +36,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object{
         val EXTRA_ADDRESS: String= "Device_address"
+        var isConnected:Boolean=false
+
     }
 
     override fun onBackPressed() {

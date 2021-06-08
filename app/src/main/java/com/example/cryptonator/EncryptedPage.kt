@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.encrypted.*
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.lang.StringBuilder
 import java.util.*
 
 
@@ -56,6 +57,7 @@ class EncryptedPage: AppCompatActivity() {
     lateinit var  keyguard:KeyguardManager
     private lateinit var biometricPrompt: BiometricPrompt
     private  lateinit var promptInfo: BiometricPrompt.PromptInfo
+    private lateinit var dbHelper:DBHelper
 
 
 
@@ -74,7 +76,8 @@ class EncryptedPage: AppCompatActivity() {
         nameBlue= testingName.name//test
         device_name.text = nameBlue//test
         Disconnectbutton.setOnClickListener{disconnect()}
-
+        m_bluetoothSocket=ControlActivity.m_bluetoothSocket;
+        dbHelper= DBHelper(this)
 
 
 
@@ -126,6 +129,34 @@ class EncryptedPage: AppCompatActivity() {
 
     private fun verified(){
         m_isEncrypted=true;
+        if(dbHelper.GetDB().toString() !="") {
+            sendCommand("D${dbHelper.GetDB().toString()}")
+        }
+        else{
+            val AlphaNumericString = ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    + "0123456789"
+                    + "abcdefghijklmnopqrstuvxyz")
+
+            // create StringBuffer size of AlphaNumericString
+
+            // create StringBuffer size of AlphaNumericString
+            val sb = StringBuilder(24)
+
+            for (i in 0 until 24) {
+
+                // generate a random number between
+                // 0 to AlphaNumericString variable length
+                val index = (AlphaNumericString.length
+                        * Math.random()).toInt()
+
+                // add Character one by one in end of sb
+                sb.append(
+                    AlphaNumericString[index]
+                )
+            }
+            var randomString = "D${sb.toString()}";
+            sendCommand("$randomString")
+        }
         val intent = Intent (this,VerifiedActivity::class.java)
         intent.putExtra(m_address, m_address)
         startActivity(intent)
@@ -196,8 +227,15 @@ class EncryptedPage: AppCompatActivity() {
         }
     }
 
-    private fun sendCommand(){
+    private fun sendCommand(input: String) {
+        if (m_bluetoothSocket != null) {
+            try{
 
+                m_bluetoothSocket!!.outputStream.write(input.toByteArray())
+            } catch(e: IOException) {
+                e.printStackTrace()
+            }
+        }
     }
 
     private fun disconnect(){

@@ -74,18 +74,19 @@ class ControlActivity: AppCompatActivity() {
         nameBlue= testingName.name//test
         device_name.text = nameBlue//test
         connectionThread=null
+            if(!MainActivity.isConnected)
+        {
+            if (testingName.bondState == BluetoothDevice.BOND_BONDED ) {
 
-            if (testingName.bondState == BluetoothDevice.BOND_BONDED) {
-
-                 ConnectToDevice(this).execute()
+                ConnectToDevice(this).execute()
 
             } else {
 
 
-                 pairDevice(testingName)
+                pairDevice(testingName)
 
             }
-
+        }
 
 
 
@@ -217,7 +218,7 @@ class ControlActivity: AppCompatActivity() {
                     m_bluetoothSocket!!.close()
                     m_bluetoothSocket=null
                     m_isConnected=false
-
+                    MainActivity.isConnected=false;
                 }catch(e:IOException){
                     e.printStackTrace()
                 }
@@ -272,7 +273,7 @@ class ControlActivity: AppCompatActivity() {
 //                (context as ControlActivity).finish()
             }else{
                 m_isConnected = true
-
+                MainActivity.isConnected=true
 
                 var androidId :String= Settings.Secure.getString(this.context.getContentResolver(),Settings.Secure.ANDROID_ID)
                 var sendData:String="M$androidId"
