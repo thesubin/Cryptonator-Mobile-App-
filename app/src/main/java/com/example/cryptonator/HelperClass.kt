@@ -78,8 +78,6 @@ class HelperClass(c:Context,m_address:String){
            "U"->
                try{
                    val intent = Intent(context, Loading::class.java)
-                   Loading.instance.mainId.text="Your Files are being Decrypted";
-
                    context.startActivity(intent)  //Switch Tabs Decryption
 
 
@@ -92,7 +90,6 @@ class HelperClass(c:Context,m_address:String){
            "L"->
                try{
                      val intent = Intent(context, Loading::class.java)
-                   Loading.instance.mainId.text="Your Files are being Encrypted";
                      context.startActivity(intent)  //Switch Tabs Decryption
 
 
