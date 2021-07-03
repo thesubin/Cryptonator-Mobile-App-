@@ -40,7 +40,6 @@ class Loading:AppCompatActivity() {
         nameBlue = testingName.name//test
         m_bluetoothSocket =ControlActivity.m_bluetoothSocket;
 
-
     }
 
 

@@ -3,6 +3,7 @@ package com.example.cryptonator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import kotlinx.android.synthetic.main.loading.*
@@ -89,11 +90,17 @@ class HelperClass(c:Context,m_address:String){
 
            "L"->
                try{
-                     val intent = Intent(context, Loading::class.java)
-                     context.startActivity(intent)  //Switch Tabs Decryption
+                    println("Here")
+//                     val intent = Intent(context, Loading::class.java)
+//                     context.startActivity(intent)  //Switch Tabs Decryption
+                   val intent = Intent(context, Loading::class.java)
+                   intent.putExtra("Device_address", address)
 
+                   context.startActivity(intent)  //Switch Tabs Decryption
 
-           }
+                   println("!sr")
+
+               }
            catch (e:Exception){
                println(e.stackTrace)
            }   //Switch Encryption Body Only Here

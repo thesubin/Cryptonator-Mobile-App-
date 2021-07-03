@@ -32,6 +32,12 @@
         <activity android:name=".EncryptedPage"
             android:screenOrientation="portrait"
             />
+        <activity android:name=".LoadingPage"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".Loading"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

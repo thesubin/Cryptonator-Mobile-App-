@@ -30,10 +30,10 @@ import java.lang.StringBuilder
 import java.util.*
 
 
-class EncryptedPage: AppCompatActivity() {
+class LoadingPage: AppCompatActivity() {
 
     object HOLDER {
-        val INSTANCE = EncryptedPage()
+        val INSTANCE = LoadingPage()
     }
 
 
@@ -49,7 +49,7 @@ class EncryptedPage: AppCompatActivity() {
         lateinit var nameBlue:String// test
 
         private val TAG= MainActivity::getLocalClassName.toString()
-        val instance: EncryptedPage by lazy { HOLDER.INSTANCE }
+        val instance: LoadingPage by lazy { HOLDER.INSTANCE }
 
     }
     private lateinit var progress: ProgressDialog
@@ -130,7 +130,6 @@ class EncryptedPage: AppCompatActivity() {
     private fun verified(){
         m_isEncrypted=true;
         if(dbHelper.GetDB().toString() !="") {
-            println("D${dbHelper.GetDB().toString()}")
             sendCommand("D${dbHelper.GetDB().toString()}")
         }
         else{
@@ -159,7 +158,7 @@ class EncryptedPage: AppCompatActivity() {
             sendCommand("$randomString")
         }
         val intent = Intent (this,VerifiedActivity::class.java)
-        intent.putExtra("Address", m_address)
+        intent.putExtra(m_address, m_address)
         startActivity(intent)
 
     }
