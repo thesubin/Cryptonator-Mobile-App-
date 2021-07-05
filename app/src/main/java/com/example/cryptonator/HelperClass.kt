@@ -18,8 +18,9 @@ class HelperClass(c:Context,m_address:String){
             this.context=c;
             this.address=m_address
         }
-    private fun HelperClass(){
-             dbHelper= DBHelper(context)
+        fun HelperClass(){
+
+             dbHelper= DBHelper(this.context)
 
      }
    public fun dataParser(message: String){
@@ -30,24 +31,24 @@ class HelperClass(c:Context,m_address:String){
         when(header){
             "S"-> stateDefinition(body)  //State DEFINITION
             "T"-> print(body)
-            "A"->Acknowledgement(body)
+            "K"->Acknowledgement(body)
 
         }
     }
     private  fun Acknowledgement(data: String){
         val header =  data.substring(0,1);
-        val body =  data.substring(1,data.length);
-        when(header) {
-            "K" ->
-                try {
-
+        val body =  data.substring(0,data.length);
+              try {
+                  dbHelper= DBHelper(this.context)
+                        println(body+ "ASDASD")
                         dbHelper.Update(body)
-
+//                        var data = dbHelper.GetDB();
+//                        println(data + "DAtabase")
                       //Switch Tabs Decryption
                 } catch (e: Exception) {
                     println(e.stackTrace)
                 }
-        }
+
     }
    private fun stateDefinition(data:String){
        val header =  data.substring(0,1);
