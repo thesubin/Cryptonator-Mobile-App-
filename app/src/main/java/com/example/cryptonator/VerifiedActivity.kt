@@ -35,7 +35,7 @@ class VerifiedActivity :AppCompatActivity(){
     var deviceStatus: BluetoothSocket?=null;
     var handler: Handler = Handler()
     var runnable: Runnable? = null
-    var delay = 10000
+    var delay = 2000
     private val btManager: BTManager? = null
 
     override fun onBackPressed() {
@@ -82,6 +82,35 @@ class VerifiedActivity :AppCompatActivity(){
     override fun onResume() {
 //        var androidId :String= Settings.Secure.getString(contentResolver,Settings.Secure.ANDROID_ID)
 //        sendCommand("M$androidId")
+        if(dbHelper.GetDB().toString() !="") {
+            println("D${dbHelper.GetDB().toString()}")
+            sendCommand("D${dbHelper.GetDB().toString()}")
+        }
+        else{
+            val AlphaNumericString = ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    + "0123456789"
+                    + "abcdefghijklmnopqrstuvxyz")
+
+            // create StringBuffer size of AlphaNumericString
+
+            // create StringBuffer size of AlphaNumericString
+            val sb = StringBuilder(24)
+
+            for (i in 0 until 24) {
+
+                // generate a random number between
+                // 0 to AlphaNumericString variable length
+                val index = (AlphaNumericString.length
+                        * Math.random()).toInt()
+
+                // add Character one by one in end of sb
+                sb.append(
+                    AlphaNumericString[index]
+                )
+            }
+            var randomString = "D${sb.toString()}";
+            sendCommand("$randomString")
+        }
          handler.postDelayed(Runnable {
             handler.postDelayed(runnable, delay.toLong())
             try {
