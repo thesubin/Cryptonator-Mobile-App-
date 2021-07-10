@@ -1,5 +1,17 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory app:title="KEY">
 
+        <SwitchPreferenceCompat
+
+            app:key="uninstall"
+            app:title="Prevent from Uninstallation" />
+        <Preference  app:title="View Manual Keys">
+
+        </Preference>
+
+
+    </PreferenceCategory>
     <PreferenceCategory app:title="@string/messages_header">
 
         <EditTextPreference

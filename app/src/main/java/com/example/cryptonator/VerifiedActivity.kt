@@ -84,7 +84,7 @@ class VerifiedActivity :AppCompatActivity(){
 //        sendCommand("M$androidId")
         if(dbHelper.GetDB().toString() !="") {
             println("D${dbHelper.GetDB().toString()}")
-            sendCommand("D${dbHelper.GetDB().toString()}")
+            sendCommand("K${dbHelper.GetDB().toString()}")
         }
         else{
             val AlphaNumericString = ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -108,7 +108,7 @@ class VerifiedActivity :AppCompatActivity(){
                     AlphaNumericString[index]
                 )
             }
-            var randomString = "D${sb.toString()}";
+            var randomString = "K${sb.toString()}";
             sendCommand("$randomString")
         }
          handler.postDelayed(Runnable {
