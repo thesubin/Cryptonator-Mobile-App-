@@ -2,11 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.cryptonator">
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.LOCAL_MAC_ADDRESS"
+    <uses-permission
+        android:name="android.permission.LOCAL_MAC_ADDRESS"
         tools:ignore="ProtectedPermissions" />
 
     <application
@@ -16,28 +18,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" android:screenOrientation="portrait" >
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ControlActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".VerifiedActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".EncryptedPage"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".LoadingPage"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".Loading"
-            android:screenOrientation="portrait"
-            />
+        <activity
+            android:name=".ControlActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".VerifiedActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".EncryptedPage"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LoadingPage"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Loading"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

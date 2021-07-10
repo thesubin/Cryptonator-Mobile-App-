@@ -52,7 +52,10 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         params= select_device.layoutParams.height
-
+            settingsBtn.setOnClickListener {
+                val intent =Intent(this,SettingsActivity::class.java)
+                startActivity(intent)
+            }
         if (ContextCompat.checkSelfPermission(this@MainActivity,
                 Manifest.permission.ACCESS_FINE_LOCATION) !==
             PackageManager.PERMISSION_GRANTED) {
@@ -83,9 +86,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnRefresh.setOnClickListener{
-            bAdapter.startDiscovery();
-            nameList.clear();
-            list.clear();
+//            bAdapter.startDiscovery();
+//            nameList.clear();
+//            list.clear();
+
+            startActivity(Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS))
         }
 
         Onbutton.setOnClickListener {
