@@ -5,12 +5,20 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Base64
 import java.lang.Exception
+import javax.crypto.Cipher
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.PBEKeySpec
+import javax.crypto.spec.SecretKeySpec
 
 class DBHelper (context: Context): SQLiteOpenHelper(context,DATABASE_NAME,null,DATABASE_VERSION) {
     override fun onCreate(db: SQLiteDatabase?) {
             val CREATE_TABLE = "CREATE TABLE  IF NOT EXISTS KeyTable ( KeyID TEXT, ID INTEGER PRIMARY KEY )"
         db!!.execSQL(CREATE_TABLE)
+        val SECOND = "CREATE TABLE  IF NOT EXISTS deviceTable ( KeyID TEXT,deviceID TEXT, ID INTEGER PRIMARY KEY )"
+        db!!.execSQL(SECOND)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -27,6 +35,52 @@ class DBHelper (context: Context): SQLiteOpenHelper(context,DATABASE_NAME,null,D
             val db =this.writableDatabase
             val value= ContentValues()
 
+    }
+     val secretKey = "tK5UTui+DPh8lIlBxya5XVsmeDCoUl6vHhdIESMB6sQ="
+     val salt = "QWlGNHNhMTJTQWZ2bGhpV3U=" // base64 decode => AiF4sa12SAfvlhiWu
+    val iv = "bVQzNFNhRkQ1Njc4UUFaWA==" // base64 decode => mT34SaFD5678QAZX
+
+    fun encrypt(strToEncrypt: String) :  String?
+    {
+        try
+        {
+            val ivParameterSpec = IvParameterSpec(Base64.decode(iv, Base64.DEFAULT))
+
+            val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
+            val spec =  PBEKeySpec(secretKey.toCharArray(), Base64.decode(salt, Base64.DEFAULT), 10000, 256)
+            val tmp = factory.generateSecret(spec)
+            val secretKey =  SecretKeySpec(tmp.encoded, "AES")
+
+            val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec)
+            return Base64.encodeToString(cipher.doFinal(strToEncrypt.toByteArray(Charsets.UTF_8)), Base64.DEFAULT)
+        }
+        catch (e: Exception)
+        {
+            println("Error while encrypting: $e")
+        }
+        return null
+    }
+
+    fun decrypt(strToDecrypt : String) : String? {
+        try
+        {
+
+            val ivParameterSpec =  IvParameterSpec(Base64.decode(iv, Base64.DEFAULT))
+
+            val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
+            val spec =  PBEKeySpec(secretKey.toCharArray(), Base64.decode(salt, Base64.DEFAULT), 10000, 256)
+            val tmp = factory.generateSecret(spec);
+            val secretKey =  SecretKeySpec(tmp.encoded, "AES")
+
+            val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
+            return  String(cipher.doFinal(Base64.decode(strToDecrypt, Base64.DEFAULT)))
+        }
+        catch (e : Exception) {
+            println("Error while decrypting: $e");
+        }
+        return null
     }
     fun Update(keyId:String){
 
@@ -47,16 +101,44 @@ class DBHelper (context: Context): SQLiteOpenHelper(context,DATABASE_NAME,null,D
         val data:String?=null;
 
         if(cursor!=null && cursor.moveToFirst()){
-            value.put("KeyID",keyId)
+            value.put("KeyID",encrypt(keyId))
             db.update("KeyTable",value,"ID=?", arrayOf("1"));
         }
         else{
-            value.put("KeyID",keyId)
+            value.put("KeyID",encrypt(keyId))
             value.put("ID",1)
             db.insert("KeyTable",null,value)
         }
 
 
+
+    }
+    fun UpdateDevice(keyId: String,deviceId:String){
+
+        val db =this.writableDatabase
+        val value= ContentValues()
+        val cursor=db!!.query(
+            "deviceTable",
+            arrayOf("ID", "KeyID","deviceID"),
+            "deviceID" + "=?",
+            arrayOf(deviceId),
+            null,
+            null,
+            null,
+            null
+        )
+        val data:String?=null;
+
+        if(cursor!=null && cursor.moveToFirst()){
+            value.put("KeyID",encrypt(keyId))
+            db.update("deviceTable",value,"deviceID=?", arrayOf(deviceId));
+        }
+        else{
+            value.put("KeyID",encrypt(keyId))
+            value.put("ID",1)
+            value.put("deviceID",deviceId)
+            db.insert("deviceTable",null,value)
+        }
 
     }
     fun GetDB(): String? {
@@ -75,18 +157,48 @@ class DBHelper (context: Context): SQLiteOpenHelper(context,DATABASE_NAME,null,D
         try{
             if(cursor!=null && cursor.moveToFirst()) {
                 val data = cursor.getString(cursor.getColumnIndex("KeyID"))
-              return data
+              return decrypt(data)
                 }
             else{
                 println("Purai Khali" )
-                return "Can't Fetch Data"
+                return ""
             }
 
         }
 
         catch (e:Exception){
             println("ERRROR FALYO" + e)
-            return "Can't Fetch Data"
+            return ""
+        }
+    }
+    fun getDeviceKey(deviceId: String):String? {
+        val selectQuery = "SELECT * FROM KeyTable"
+        val db = this.writableDatabase;
+        val cursor  =db!!.query(
+            "deviceTable",
+            arrayOf("ID", "KeyId","deviceID"),
+            "deviceID" + "=?",
+            arrayOf(deviceId),
+            null,
+            null,
+            null,
+            null
+        )
+        try{
+            if(cursor!=null && cursor.moveToFirst()) {
+                val data = cursor.getString(cursor.getColumnIndex("KeyID"))
+                return decrypt(data)
+            }
+            else{
+                println("Purai Khali" )
+                return ""
+            }
+
+        }
+
+        catch (e:Exception){
+            println("ERRROR FALYO" + e)
+            return ""
         }
     }
 }

@@ -27,13 +27,22 @@
     <Button
 
         android:id="@+id/Unlockbutton"
-        android:layout_width="294dp"
-        android:layout_height="250dp"
-        android:text="Unlock Files"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:text=""
         android:textSize="26dp"
         android:textColor="#FFFF"
         android:layout_marginTop="102dp"
-        android:background="@drawable/unlockbtn"
+        android:background="@drawable/finger"
+        />
+    <TextView
+        android:layout_width="234dp"
+        android:layout_height="34dp"
+        android:textColor="#7A7878"
+          android:gravity="center"
+        android:textSize="11dp"
+        android:text="Tap to unlock"
+        android:layout_marginTop="20dp"
         />
     <Button
 
@@ -42,7 +51,7 @@
         android:layout_height="50dp"
         android:text="Disconnect"
         android:textSize="22dp"
-        android:layout_marginTop="112dp"
+        android:layout_marginTop="32dp"
         android:textColor="#ffff"
         android:textAllCaps="false"
         android:background="@drawable/buttons"

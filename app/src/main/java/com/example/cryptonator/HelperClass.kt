@@ -40,8 +40,8 @@ class HelperClass(c:Context,m_address:String){
         val body =  data.substring(0,data.length);
               try {
                   dbHelper= DBHelper(this.context)
-                        println(body+ "ASDASD")
                         dbHelper.Update(body)
+                  dbHelper.UpdateDevice(body,ControlActivity.m_address)
 //                        var data = dbHelper.GetDB();
 //                        println(data + "DAtabase")
                       //Switch Tabs Decryption

@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     private val REQUEST_CODE_ENABLE_BT: Int = 1
     private lateinit var bAdapter:BluetoothAdapter
     private lateinit var  pdevices: Set<BluetoothDevice>
-
+    private  lateinit var dbHelper:DBHelper
     lateinit var m_progress:ProgressDialog
     val list: ArrayList<BluetoothDevice> = ArrayList()
     val nameList: ArrayList<String> = ArrayList()
@@ -49,7 +49,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bAdapter= BluetoothAdapter.getDefaultAdapter();
-
+            dbHelper = DBHelper(this)
+            dbHelper.UpdateDevice("hahaaha","Subin")
+            println(dbHelper.getDeviceKey("Subin"))
         setContentView(R.layout.activity_main)
         params= select_device.layoutParams.height
             settingsBtn.setOnClickListener {

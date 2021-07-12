@@ -6,8 +6,12 @@
 
             app:key="uninstall"
             app:title="Prevent from Uninstallation" />
-        <Preference  app:title="View Manual Keys">
-
+        <Preference  app:key="manual"  app:title="View Manual Keys">
+            <intent
+                android:action="android.intent.action.MAIN"
+                android:targetPackage="com.example.cryptonator"
+                android:targetClass="com.example.cryptonator.Loading"
+                />
         </Preference>
 
 

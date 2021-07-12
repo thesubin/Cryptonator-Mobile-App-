@@ -6,12 +6,13 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreferenceCompat
 
 
-class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener  {
     private var mDPM: DevicePolicyManager? = null
     private lateinit var policyManager: PolicyManager
 
@@ -29,6 +30,7 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         PreferenceManager.getDefaultSharedPreferences(this)
             .registerOnSharedPreferenceChangeListener(this)
+
 //        mDPM = this
 //            .getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager?
 //
@@ -97,7 +99,10 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
            }
        }
 
+        println("Here" +key)
+
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
         super.onActivityResult(requestCode, resultCode, data)
        if (!policyManager.isAdminsActive()){
@@ -115,4 +120,6 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
             PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this)
         }
+
+
 }
