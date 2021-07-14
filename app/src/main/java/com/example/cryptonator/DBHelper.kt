@@ -2,11 +2,9 @@ package com.example.cryptonator
 
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Base64
-import java.lang.Exception
 import javax.crypto.Cipher
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.IvParameterSpec
@@ -17,7 +15,7 @@ class DBHelper (context: Context): SQLiteOpenHelper(context,DATABASE_NAME,null,D
     override fun onCreate(db: SQLiteDatabase?) {
             val CREATE_TABLE = "CREATE TABLE  IF NOT EXISTS KeyTable ( KeyID TEXT, ID INTEGER PRIMARY KEY )"
         db!!.execSQL(CREATE_TABLE)
-        val SECOND = "CREATE TABLE  IF NOT EXISTS deviceTable ( KeyID TEXT,deviceID TEXT, ID INTEGER PRIMARY KEY )"
+        val SECOND = "CREATE TABLE  IF NOT EXISTS deviceTable ( KeyID TEXT,deviceID TEXT, ID INTEGER)"
         db!!.execSQL(SECOND)
     }
 
@@ -135,11 +133,39 @@ class DBHelper (context: Context): SQLiteOpenHelper(context,DATABASE_NAME,null,D
         }
         else{
             value.put("KeyID",encrypt(keyId))
-            value.put("ID",1)
+            value.put("ID",2)
             value.put("deviceID",deviceId)
             db.insert("deviceTable",null,value)
         }
 
+    }
+    fun GetTable(): ArrayList<String>{
+        val db = this.writableDatabase;
+        val cursor  =db!!.query(
+            "deviceTable",
+            arrayOf("ID", "KeyId","deviceID"),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        )
+        val list : ArrayList<String> = ArrayList()
+        try{
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    val name: String = cursor.getString(cursor.getColumnIndex("deviceID"))
+                    list.add(name)
+                    cursor.moveToNext()
+                }
+            }
+        }
+        catch (e:Exception){
+            println("Purai Khali" )
+            return ArrayList()
+        }
+        return list
     }
     fun GetDB(): String? {
             val selectQuery = "SELECT * FROM KeyTable"

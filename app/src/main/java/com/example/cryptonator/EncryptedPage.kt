@@ -83,7 +83,6 @@ class EncryptedPage: AppCompatActivity() {
 
 
         biometricManager= BiometricManager.from(this)
-        checkBiometricStatus(biometricManager)
 
         val executor= ContextCompat.getMainExecutor(this)
 
@@ -91,6 +90,8 @@ class EncryptedPage: AppCompatActivity() {
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
                 toasty("Authenication error:$errString")
+                checkBiometricStatus(biometricManager)
+
             }
 
             override fun onAuthenticationFailed() {

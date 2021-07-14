@@ -49,9 +49,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bAdapter= BluetoothAdapter.getDefaultAdapter();
-            dbHelper = DBHelper(this)
-            dbHelper.UpdateDevice("hahaaha","Subin")
-            println(dbHelper.getDeviceKey("Subin"))
+
+
         setContentView(R.layout.activity_main)
         params= select_device.layoutParams.height
             settingsBtn.setOnClickListener {
@@ -251,6 +250,7 @@ class MainActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,nList)
 
         if(status=="NotA") {
+
             select_device2.visibility=View.GONE
             textselect2.visibility=View.GONE
             textselect.text = "Paired Devices"

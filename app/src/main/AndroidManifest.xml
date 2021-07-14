@@ -45,6 +45,12 @@
         <activity
             android:name=".Loading"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".Manual"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".KeyDisplay"
+            android:screenOrientation="portrait" />
         <receiver
 
             android:name=".SampleDeviceAdminReceiver"

@@ -10,7 +10,7 @@
             <intent
                 android:action="android.intent.action.MAIN"
                 android:targetPackage="com.example.cryptonator"
-                android:targetClass="com.example.cryptonator.Loading"
+                android:targetClass="com.example.cryptonator.Manual"
                 />
         </Preference>
 

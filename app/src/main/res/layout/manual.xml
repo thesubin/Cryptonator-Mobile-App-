@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+
+    <TextView
+        android:id="@+id/bluetoothStatusTv"
+        android:layout_width="114dp"
+        android:layout_height="34dp"
+        android:gravity="center"
+        android:text=""
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/textselect"
+        android:layout_width="234dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="-92dp"
+        android:text="Available Devices"
+        android:textAlignment="center"
+        android:textSize="15dp"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/select_device"
+        android:layout_width="350dp"
+        android:layout_height="250dp"
+        android:visibility="gone"
+
+        />
+
+    <TextView
+        android:id="@+id/textselect2"
+        android:layout_width="234dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="222dp"
+        android:text="Select Device"
+        android:textAlignment="center"
+        android:textSize="15dp"
+        android:visibility="visible" />
+
+    <ListView
+        android:id="@+id/devicetable"
+        android:layout_width="350dp"
+        android:layout_height="190dp"
+        android:visibility="visible"
+
+        />
+
+
+
+
+</LinearLayout>

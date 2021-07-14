@@ -112,7 +112,7 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
            val intent = Intent (this,MainActivity::class.java)
            startActivity(intent)
 
-           println("Herererer" + data)
+
         }
     }
         override fun onDestroy() {
