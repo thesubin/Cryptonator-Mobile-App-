@@ -23,7 +23,7 @@ class HelperClass(c:Context,m_address:String){
              dbHelper= DBHelper(this.context)
 
      }
-   public fun dataParser(message: String){
+   public fun dataParser(message: String,m_address: String){
         val header =  message.substring(0,1);
         val body =  message.substring(1,message.length);
        println("Thread Running")
@@ -31,17 +31,17 @@ class HelperClass(c:Context,m_address:String){
         when(header){
             "S"-> stateDefinition(body)  //State DEFINITION
             "T"-> print(body)
-            "K"->Acknowledgement(body)
+            "K"->Acknowledgement(body,m_address)
 
         }
     }
-    private  fun Acknowledgement(data: String){
+    private  fun Acknowledgement(data: String,m_address: String){
         val header =  data.substring(0,1);
         val body =  data.substring(0,data.length);
               try {
                   dbHelper= DBHelper(this.context)
                         dbHelper.Update(body)
-                  dbHelper.UpdateDevice(body,ControlActivity.m_address)
+                  dbHelper.UpdateDevice(body,m_address)
 //                        var data = dbHelper.GetDB();
 //                        println(data + "DAtabase")
                       //Switch Tabs Decryption

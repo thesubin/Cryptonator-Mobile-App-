@@ -367,7 +367,7 @@ class ControlActivity: AppCompatActivity() {
 //                                VerifiedActivity.instance.device_name.text=message;
                                 Log.d(TAG,message)
                                 println(message)
-                                  helperClass.dataParser(message);
+                                  helperClass.dataParser(message, m_address);
 
                             } catch (e: IOException) {
 
