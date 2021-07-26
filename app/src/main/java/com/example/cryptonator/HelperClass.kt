@@ -80,6 +80,8 @@ class HelperClass(c:Context,m_address:String){
            "U"->
                try{
                    val intent = Intent(context, Loading::class.java)
+
+                   intent.putExtra("Device_address", "Files are Decrypting")
                    context.startActivity(intent)  //Switch Tabs Decryption
 
 
@@ -95,11 +97,11 @@ class HelperClass(c:Context,m_address:String){
 //                     val intent = Intent(context, Loading::class.java)
 //                     context.startActivity(intent)  //Switch Tabs Decryption
                    val intent = Intent(context, Loading::class.java)
-                   intent.putExtra("Device_address", address)
+                   intent.putExtra("Device_address", "Files are Encrypting")
 
                    context.startActivity(intent)  //Switch Tabs Decryption
 
-                   println("!sr")
+
 
                }
            catch (e:Exception){

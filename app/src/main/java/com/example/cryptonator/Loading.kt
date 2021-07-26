@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.control_act.*
 import kotlinx.android.synthetic.main.control_act.device_name
 import kotlinx.android.synthetic.main.encrypted.*
+import kotlinx.android.synthetic.main.loading.*
 import java.util.*
 
 class Loading:AppCompatActivity() {
@@ -20,6 +21,11 @@ class Loading:AppCompatActivity() {
        val instance: Loading by lazy {Loading.HOLDER.INSTANCE }
 
     }
+    override fun onBackPressed() {
+// super.onBackPressed();
+// Not calling **super**, disables back button in current screen.
+    }
+
     var m_bluetoothSocket: BluetoothSocket?= null
     lateinit var m_progress:ProgressDialog
     var m_isConnected:Boolean=false
@@ -29,17 +35,11 @@ class Loading:AppCompatActivity() {
     lateinit var m_address: String
     lateinit var nameBlue:String// test
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.loading)
-        m_address = intent.getStringExtra(MainActivity.EXTRA_ADDRESS)
-        m_bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        val testingName: BluetoothDevice = m_bluetoothAdapter.getRemoteDevice(
-            m_address
-        ) //test
-        nameBlue = testingName.name//test
-        m_bluetoothSocket =ControlActivity.m_bluetoothSocket;
-
+        m_address = intent.getStringExtra("Device_address")
+        device_name.text= m_address
     }
 
 

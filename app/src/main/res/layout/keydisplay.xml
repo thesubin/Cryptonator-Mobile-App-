@@ -27,7 +27,7 @@
         android:layout_marginTop="22dp"
         android:text="XXXXXXXX"
         android:textAlignment="center"
-        android:textSize="30dp"
+        android:textSize="28dp"
         android:visibility="visible" />
 
 
